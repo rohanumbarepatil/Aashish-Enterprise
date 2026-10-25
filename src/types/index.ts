@@ -22,7 +22,9 @@ export interface Commodity {
   nameEn: string;
   category: "CEREAL" | "PULSE" | "OILSEED" | "SPICE" | "COMMERCIAL" | "OTHER";
   categoryNameMr: string;
+  categoryNameEn?: string;
   descriptionMr: string;
+  descriptionEn?: string;
   defaultUnit: UnitType;
   imageUrl: string;
   isActive: boolean;

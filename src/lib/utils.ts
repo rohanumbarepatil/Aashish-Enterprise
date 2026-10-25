@@ -73,24 +73,47 @@ export function buildWhatsAppLink(details?: {
   quantity?: number;
   unit?: string;
   requestId?: string;
+  lang?: "mr" | "en";
+  customMessage?: string;
 }): string {
   const phone = BUSINESS_CONFIG.contact.whatsAppNumber.replace(/[^0-9]/g, "");
 
-  let message = `नमस्कार आशिष एंटरप्राइजेस,`;
-  if (details?.requestId) {
-    message += `\nमाझ्या शेतमाल विक्री विनंती क्र. ${details.requestId} बाबत मला चौकशी करायची आहे.`;
-  } else if (details?.commodityName) {
-    message += `\nमला शेतमाल विक्रीसाठी संपर्क करायचा आहे:`;
-    if (details.farmerName) message += `\nशेतकरी नाव: ${details.farmerName}`;
-    if (details.village) message += `\nगाव: ${details.village}`;
-    message += `\nशेतमाल: ${details.commodityName}`;
-    if (details.quantity && details.unit) {
-      message += `\nअंदाजे प्रमाण: ${details.quantity} ${details.unit}`;
+  if (details?.customMessage) {
+    return `https://wa.me/${phone}?text=${encodeURIComponent(details.customMessage)}`;
+  }
+
+  const isEn = details?.lang === "en";
+
+  let message = "";
+  if (isEn) {
+    if (details?.requestId) {
+      message = `Hello Ashish Enterprises,\nI would like to enquire about my sale request ID: ${details.requestId}.`;
+    } else if (details?.commodityName) {
+      message = `Hello Ashish Enterprises,\nI would like to enquire about selling agricultural produce:\nCommodity: ${details.commodityName}`;
+      if (details.farmerName) message += `\nName: ${details.farmerName}`;
+      if (details.village) message += `\nVillage/Location: ${details.village}`;
+      if (details.quantity && details.unit) {
+        message += `\nEstimated Quantity: ${details.quantity} ${details.unit}`;
+      }
+    } else {
+      message = "Hello Ashish Enterprises, I would like to know more about your agricultural commodity buying and selling services.";
     }
   } else {
-    message += `\nमला शेतमाल विक्री आणि बाजारभावाबाबत माहिती हवी आहे.`;
+    message = `नमस्कार आशिष एंटरप्राइजेस,`;
+    if (details?.requestId) {
+      message += `\nमाझ्या शेतमाल विक्री विनंती क्र. ${details.requestId} बाबत मला चौकशी करायची आहे.`;
+    } else if (details?.commodityName) {
+      message += `\nमला शेतमाल विक्रीसाठी संपर्क करायचा आहे:`;
+      if (details.farmerName) message += `\nशेतकरी नाव: ${details.farmerName}`;
+      if (details.village) message += `\nगाव: ${details.village}`;
+      message += `\nशेतमाल: ${details.commodityName}`;
+      if (details.quantity && details.unit) {
+        message += `\nअंदाजे प्रमाण: ${details.quantity} ${details.unit}`;
+      }
+    } else {
+      message = `नमस्कार आशिष एंटरप्राइजेस, मला कृषी मालाबद्दल माहिती हवी आहे.`;
+    }
   }
-  message += `\nकृपया मार्गदर्शन करावे.`;
 
   return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
 }
